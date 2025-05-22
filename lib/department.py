@@ -139,3 +139,12 @@ class Department:
 
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
+    
+    def employees(self):
+        from employee import Employee  # to avoid circular import
+        sql = """
+            SELECT * FROM employees
+            WHERE department_id = ?
+        """
+        rows = CURSOR.execute(sql, (self.id,)).fetchall()
+        return [Employee.instance_from_db(row) for row in rows]
